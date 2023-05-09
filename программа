@@ -2,25 +2,24 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-file="./Solar_Taj.xlsx"
-solarData=pd.read_excel(io=file,
-engine='openpyxl');
+url="https://www.dropbox.com/scl/fi/2bqjf1fp7ub53qsw8bbo3/Solar_Taj.xlsx?dl=1&rlkey=p8yspsxcapnarxvasvl1bmpgq"
+solarData=pd.read_excel(io=url,engine='openpyxl')
 
 keys=[]
 for value in solarData:
-keys.append(value)
+  keys.append(value)
 
 months=[]
 for value in solarData[keys[0]]:
-months.append(f"{value}".split('-')[1])
+  months.append(f"{value}".split('-')[1])
 
 times=[]
 for value in solarData[keys[1]]:
-times.append(value.hour)
+  times.append(value.hour)
 
 etrs=[]
 for value in solarData[keys[3]]:
-etrs.append(value)
+  etrs.append(value)
 
 maxValues=[]
 averageValues=[]
@@ -28,25 +27,25 @@ averageValues=[]
 tempMaxValue=0
 tempAverage=0
 
-index=0
-for time in times:
-if int(months[index]) != 1:
-break
 
-if etrs[index] > tempMaxValue:
-tempMaxValue=etrs[index]
+count=0
+size=24*32
 
-tempAverage+=etrs[index]
-if 0 == time:
-averageValues.append(tempAverage/24)
-maxValues.append(tempMaxValue)
-tempAverage=0
-tempMaxValue=0
-index+=1
+for i in range(size):
+    if etrs[i] > tempMaxValue:
+        tempMaxValue = etrs[i]
+    tempAverage += etrs[i]
+    if count == 24:
+        count = 0
+        maxValues.append(tempMaxValue)
+        averageValues.append(tempAverage/24)
+        tempMaxValue=0
+        tempAverage=0
+    count+=1
 
 days=[]
 for i in range(31):
-days.append(i+1)
+    days.append(i+1)
 
 plt.figure(figsize=(10, 5))
 plt.plot(maxValues,days, label="max values per day")
